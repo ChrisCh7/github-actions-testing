@@ -32,6 +32,7 @@ jobs:
         run: |
           latest_release_branch=$(git branch -r | grep 'origin/release/' | sed 's|origin/||' | sort -V | tail -n1)
           echo "latest_release_branch=${latest_release_branch}" >> $GITHUB_OUTPUT
+          echo ">>>${latest_release_branch}<<<"
 
       - name: Check if develop has new commits
         id: check_diff
