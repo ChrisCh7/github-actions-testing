@@ -21,10 +21,6 @@ jobs:
         ChrisCh7/github-actions-testing
 
     steps:
-      - name: Set up GitHub CLI
-        run: |
-          echo "$GH_TOKEN" | gh auth login --with-token
-
       - name: Trigger workflows in other repos
         run: |
           failures=0
