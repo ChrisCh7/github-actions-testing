@@ -1,0 +1,63 @@
+name: Trigger Create Release Branch Workflows Across Repos
+
+on:
+  workflow_dispatch:
+    inputs:
+      release_name:
+        description: 'Release name (e.g., 2.0)'
+        required: true
+        default: '2.0'
+
+jobs:
+  trigger:
+    runs-on: ubuntu-latest
+    env:
+      GH_TOKEN: ${{ secrets.PAT }}
+      RELEASE_NAME: ${{ github.event.inputs.release_name }}
+      REF: master
+      WORKFLOW_FILE: create-release-branch.yml
+      REPOS: |
+        ChrisCh7/github-actions-testing
+        ChrisCh7/github-actions-testing
+
+    steps:
+      - name: Set up GitHub CLI
+        run: |
+          echo "$GH_TOKEN" | gh auth login --with-token
+
+      - name: Trigger workflows in other repos
+        run: |
+          failures=0
+          echo "$REPOS" | while read -r repo; do
+            echo "🚀 Triggering workflow in $repo..."
+            if gh workflow run "$WORKFLOW_FILE" \
+                --repo "$repo" \
+                --ref "$REF" \
+                -f release_name="$RELEASE_NAME"; then
+              echo "✅ Triggered successfully for $repo"
+            else
+              echo "❌ Failed to trigger workflow in $repo"
+              failures=$((failures+1))
+            fi
+          done
+          
+          if [ "$failures" -gt 0 ]; then
+            echo "❌ $failures workflow(s) failed to trigger."
+            exit 1
+          fi
+
+      - name: Wait for workflows to (hopefully) finish
+        run: |
+          echo "⏳ Waiting 60 seconds..."
+          sleep 60
+
+      - name: Check for created release branches
+        run: |
+          echo "$REPOS" | while read -r repo; do
+            echo -n "$repo: "
+            if gh api "repos/$repo/branches/release/$RELEASE_NAME" &> /dev/null; then
+              echo "✅ release/$RELEASE_NAME found"
+            else
+              echo "❌ release/$RELEASE_NAME not found"
+            fi
+          done
