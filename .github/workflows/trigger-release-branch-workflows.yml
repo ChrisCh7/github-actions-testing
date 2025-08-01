@@ -50,7 +50,9 @@ jobs:
 
       - name: Check for created release branches
         run: |
-          echo "$REPOS" | while read -r repo; do
+          mapfile -t repos <<< "$REPOS"
+          for repo in "${repos[@]}"; do
+            [ -z "$repo" ] && continue  # skip empty lines
             echo -n "$repo: "
             if gh api "repos/$repo/branches/release/$RELEASE_NAME" &> /dev/null; then
               echo "✅ release/$RELEASE_NAME found"
