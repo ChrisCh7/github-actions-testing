@@ -16,7 +16,7 @@ jobs:
       RELEASE_NAME: ${{ github.event.inputs.release_name }}
       REF: master
       WORKFLOW_FILE: create-release-branch.yml
-      REPOS: |
+      REPOS: |-
         ChrisCh7/github-actions-testing
 
     steps:
@@ -25,6 +25,7 @@ jobs:
           mapfile -t repos <<< "$REPOS"
           failures=0
           for repo in "${repos[@]}"; do
+            [ -z "$repo" ] && continue  # skip empty lines
             echo "🚀 Triggering workflow in $repo..."
             if gh workflow run "$WORKFLOW_FILE" \
                 --repo "$repo" \
