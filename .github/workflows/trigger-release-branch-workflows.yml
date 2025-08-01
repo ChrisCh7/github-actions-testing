@@ -18,13 +18,13 @@ jobs:
       WORKFLOW_FILE: create-release-branch.yml
       REPOS: |
         ChrisCh7/github-actions-testing
-        ChrisCh7/github-actions-testing
 
     steps:
       - name: Trigger workflows in other repos
         run: |
+          IFS=$'\n' read -rd '' -a repos <<< "$REPOS"
           failures=0
-          echo "$REPOS" | while read -r repo; do
+          for repo in "${repos[@]}"; do
             echo "🚀 Triggering workflow in $repo..."
             if gh workflow run "$WORKFLOW_FILE" \
                 --repo "$repo" \
