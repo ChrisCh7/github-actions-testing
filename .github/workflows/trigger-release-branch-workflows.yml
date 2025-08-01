@@ -22,7 +22,7 @@ jobs:
     steps:
       - name: Trigger workflows in other repos
         run: |
-          IFS=$'\n' read -rd '' -a repos <<< "$REPOS"
+          mapfile -t repos <<< "$REPOS"
           failures=0
           for repo in "${repos[@]}"; do
             echo "🚀 Triggering workflow in $repo..."
