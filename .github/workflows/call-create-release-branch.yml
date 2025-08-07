@@ -10,6 +10,9 @@ on:
 
 jobs:
   release:
+    permissions:
+      contents: write
+      pull-requests: write
     uses: ChrisCh7/github-actions-testing/.github/workflows/create-release-branch.yml@master
     with:
       release_name: ${{ github.event.inputs.release_name }}
