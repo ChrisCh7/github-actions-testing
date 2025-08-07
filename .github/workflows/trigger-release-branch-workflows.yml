@@ -15,7 +15,7 @@ jobs:
       GH_TOKEN: ${{ secrets.PAT }}
       RELEASE_NAME: ${{ github.event.inputs.release_name }}
       REF: master
-      WORKFLOW_FILE: create-release-branch.yml
+      WORKFLOW_FILE: call-create-release-branch.yml
       REPOS: |-
         ChrisCh7/github-actions-testing
 
