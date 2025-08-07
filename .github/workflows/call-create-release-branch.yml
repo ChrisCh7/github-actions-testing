@@ -17,4 +17,4 @@ jobs:
     with:
       release_name: ${{ github.event.inputs.release_name }}
     secrets:
-      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

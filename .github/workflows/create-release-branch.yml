@@ -8,7 +8,7 @@ on:
         required: true
         type: string
     secrets:
-      GITHUB_TOKEN:
+      GH_TOKEN:
         required: true
 
 jobs:
@@ -64,7 +64,7 @@ jobs:
       - name: Create PR to master
         if: steps.check_diff.outputs.is_up_to_date == 'false'
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
         run: |
           gh pr create \
             --title "Release ${{ github.event.inputs.release_name }}" \
