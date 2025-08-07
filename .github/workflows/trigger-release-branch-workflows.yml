@@ -20,6 +20,9 @@ jobs:
         ChrisCh7/github-actions-testing
 
     steps:
+      - name: Check GitHub CLI version
+        run: gh --version
+
       - name: Trigger workflows in other repos
         run: |
           mapfile -t repos <<< "$REPOS"
