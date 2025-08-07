@@ -1,0 +1,17 @@
+name: Call Create Release Branch
+
+on:
+  workflow_dispatch:
+    inputs:
+      release_name:
+        description: 'Release name (e.g., 1.2.3)'
+        required: true
+        type: string
+
+jobs:
+  release:
+    uses: ChrisCh7/github-actions-testing/.github/workflows/create-release-branch.yml@master
+    with:
+      release_name: ${{ github.event.inputs.release_name }}
+    secrets:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
