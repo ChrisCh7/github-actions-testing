@@ -54,11 +54,13 @@ jobs:
       - name: Check for created release branches
         run: |
           mapfile -t repos <<< "$REPOS"
+          echo "Repos in which a release branch was created:" >> $GITHUB_STEP_SUMMARY
           for repo in "${repos[@]}"; do
             [ -z "$repo" ] && continue  # skip empty lines
             echo -n "$repo: "
             if gh api "repos/$repo/branches/release/$RELEASE_NAME" &> /dev/null; then
               echo "✅ release/$RELEASE_NAME found"
+              echo "- $repo: https://github.com/$repo/tree/release/$RELEASE_NAME" >> $GITHUB_STEP_SUMMARY
             else
               echo "❌ release/$RELEASE_NAME not found"
             fi
