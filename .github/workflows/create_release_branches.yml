@@ -10,6 +10,9 @@ on:
 
 jobs:
   create-release-branches:
+    permissions:
+      contents: write
+      pull-requests: write
     runs-on: ubuntu-latest
     steps:
       - name: Set up Python
