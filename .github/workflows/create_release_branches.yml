@@ -134,8 +134,8 @@ jobs:
               return tags[0]
           
           
-          def write_to_github_output(text):
-              with open(os.environ['GITHUB_OUTPUT'], "a") as f:
+          def write_to_github_step_summary(text):
+              with open(os.environ['GITHUB_STEP_SUMMARY'], "a") as f:
                   f.write(text + '\n')
           
           
@@ -194,10 +194,10 @@ jobs:
                       print(f"Error processing {repo_full}: {e}")
           
               print('\nCreated PRs:')
-              write_to_github_output('Created PRs:')
+              write_to_github_step_summary('Created PRs:')
               print(*created_pr_links, sep="\n")
               for pr_link in created_pr_links:
-                  write_to_github_output(f'- {pr_link}')
+                  write_to_github_step_summary(f'- {pr_link}')
           
           
           if __name__ == "__main__":
