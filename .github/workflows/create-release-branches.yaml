@@ -38,6 +38,8 @@ jobs:
       matrix:
         repo: ${{ fromJSON(needs.prepare-matrix.outputs.matrix) }}
     steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
       - name: Run create-release-branch action
         uses: ./.github/actions/create-release-branch
         env:
