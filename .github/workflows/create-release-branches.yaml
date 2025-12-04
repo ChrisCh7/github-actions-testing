@@ -13,7 +13,22 @@ on:
         type: string
 
 jobs:
+  prepare-matrix:
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.set-matrix.outputs.matrix }}
+    steps:
+      - name: Prepare matrix JSON
+        id: set-matrix
+        run: |
+          REPOS="${{ github.event.inputs.repositories }}"
+          # Remove spaces and convert to JSON array
+          JSON_ARRAY=$(echo "$REPOS" | sed 's/ //g' | sed 's/,/","/g')
+          JSON_ARRAY="[\"$JSON_ARRAY\"]"
+          echo "matrix=$JSON_ARRAY" >> $GITHUB_OUTPUT
+          echo "Prepared matrix: $JSON_ARRAY"
   create-release-branches:
+    needs: prepare-matrix
     permissions:
       contents: write
       pull-requests: write
@@ -21,7 +36,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        repo: ${{ fromJSON('["' + join(split(github.event.inputs.repositories, ','), '","') + '"]') }}
+        repo: ${{ fromJSON(needs.prepare-matrix.outputs.matrix) }}
     steps:
       - name: Run create-release-branch action
         uses: ./.github/actions/create-release-branch
