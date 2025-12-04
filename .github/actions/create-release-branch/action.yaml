@@ -1,0 +1,32 @@
+name: Create release branch
+description: Create a release branch and PR into master
+
+#inputs:
+#  release_number:
+#    description: 'Number of the release (e.g. 2.14.0)'
+#    required: true
+#    type: string
+#  repository:
+#    description: 'Repository org/name (e.g. org/repo1)'
+#    required: true
+#    type: string
+
+runs:
+  using: "composite"
+  steps:
+    - name: Set up Python
+      uses: actions/setup-python@v6
+      with:
+        python-version: 3.14
+
+    - name: Upgrade pip
+      shell: bash
+      run: python -m pip install --upgrade pip
+
+    - name: Install dependencies
+      shell: bash
+      run: pip install -r ${{ github.action_path }}/requirements.txt
+
+    - name: Run script
+      shell: bash
+      run: python ${{ github.action_path }}/create-release-branches.py
