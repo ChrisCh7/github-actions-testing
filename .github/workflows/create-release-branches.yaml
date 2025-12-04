@@ -23,13 +23,8 @@ jobs:
       matrix:
         repo: ${{ fromJSON('["' + join(split(github.event.inputs.repositories, ','), '","') + '"]') }}
     steps:
-#      - name: Checkout repo
-#        uses: actions/checkout@v4
-
       - name: Run create-release-branch action
         uses: ./.github/actions/create-release-branch
-#        with:
-#          release_number: ${{ github.event.inputs.release_number }}
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           RELEASE_NUMBER: ${{ github.event.inputs.release_number }}
