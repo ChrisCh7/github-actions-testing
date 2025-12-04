@@ -103,6 +103,7 @@ def main():
         sys.exit(1)
 
     created_pr_links = []
+    errors = []
 
     for repo_full in REPOSITORIES:
         print(f"\nProcessing repository: {repo_full}")
@@ -146,13 +147,22 @@ def main():
             created_pr_links.append(pr['html_url'])
         except Exception as e:
             print(f"Error processing {repo_full}: {e}")
+            errors.append(f"Error processing {repo_full}: {e}")
             continue
 
-    print('\nCreated PRs:')
-    write_to_github_step_summary('Created PRs:')
-    print(*created_pr_links, sep="\n")
-    for pr_link in created_pr_links:
-        write_to_github_step_summary(f'- {pr_link}')
+    if created_pr_links:
+        print('\nCreated PRs:')
+        write_to_github_step_summary('Created PRs:')
+        print(*created_pr_links, sep="\n")
+        for pr_link in created_pr_links:
+            write_to_github_step_summary(f'- {pr_link}')
+    if errors:
+        print('\nErrors encountered:')
+        write_to_github_step_summary('Errors encountered:')
+        print(*errors, sep="\n")
+        for error in errors:
+            write_to_github_step_summary(f'- {error}')
+        sys.exit(1)
 
 
 if __name__ == "__main__":
