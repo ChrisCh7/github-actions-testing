@@ -41,9 +41,16 @@ jobs:
     steps:
       - name: Checkout repo
         uses: actions/checkout@v4
+      - name: Generate a token
+        id: generate-token
+        uses: actions/create-github-app-token@v2
+        with:
+          app-id: ${{ secrets.APP_ID }}
+          private-key: ${{ secrets.APP_PK }}
+          owner: ${{ github.repository_owner }}
       - name: Run create-release-branch action
         uses: ./.github/actions/create-release-branch
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ steps.generate-token.outputs.token }}
           RELEASE_NUMBER: ${{ github.event.inputs.release_number }}
           REPOSITORIES_INPUT: ${{ matrix.repo }}
