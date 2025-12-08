@@ -27,6 +27,16 @@ def get_commit_sha(owner, repo, ref, headers):
     return r.json()["object"]["sha"]
 
 
+def branch_exists(owner, repo, branch_name, headers):
+    url = f"{GITHUB_API}/repos/{owner}/{repo}/git/ref/heads/{branch_name}"
+    r = requests.get(url, headers=headers)
+    if r.status_code == 200:
+        return True
+    if r.status_code == 404:
+        return False
+    raise Exception(f"Error checking for branch {branch_name}: {r.text}")
+
+
 def compare_commits(owner, repo, base, head, headers):
     url = f"{GITHUB_API}/repos/{owner}/{repo}/compare/{base}...{head}"
     r = requests.get(url, headers=headers)
@@ -96,7 +106,11 @@ def write_to_github_step_summary(text):
 def main():
     release_number = os.environ["RELEASE_NUMBER"]
     token = get_github_token()
-    headers = {"Authorization": f"token {token}", "Accept": "application/vnd.github+json"}
+    headers = {
+        "Authorization": f"Bearer {token}",
+        "Accept": "application/vnd.github+json",
+        "X-GitHub-Api-Version": "2022-11-28"
+    }
 
     if not REPOSITORIES:
         print("No repositories defined in REPOSITORIES list.")
@@ -118,15 +132,10 @@ def main():
 
             # Check if release branch already exists
             branch_name = f"release/{release_number}"
-            url = f"{GITHUB_API}/repos/{owner}/{repo}/git/ref/heads/{branch_name}"
-            r = requests.get(url, headers=headers)
-            if r.status_code == 200:
+            if branch_exists(owner, repo, branch_name, headers):
                 print(f"Release branch {branch_name} already exists. Skipping.")
                 continue
-            elif r.status_code != 404:
-                print(f"Error checking for branch {branch_name}: {r.text}")
-                continue
-            # If 404, branch does not exist, proceed
+            # If it does not exist, proceed
 
             # Compare develop to tag
             cmp = compare_commits(owner, repo, tag, "develop", headers)
