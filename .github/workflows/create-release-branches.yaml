@@ -21,10 +21,13 @@ jobs:
       - name: Prepare matrix JSON and validate inputs
         id: set-matrix
         uses: actions/github-script@v8
+        env:
+          RELEASE_NUMBER: ${{ github.event.inputs.release_number }}
+          REPOSITORIES: ${{ github.event.inputs.repositories }}
         with:
           script: |
-            const releaseNumber = core.getInput('release_number', { required: true });
-            const repositoriesRaw = core.getInput('repositories', { required: true });
+            const releaseNumber = process.env.RELEASE_NUMBER;
+            const repositoriesRaw = process.env.REPOSITORIES;
 
             core.info(`Received release_number: '${releaseNumber}'`);
             core.info(`Received repositories: '${repositoriesRaw}'`);
