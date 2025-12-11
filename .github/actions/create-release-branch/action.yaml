@@ -19,4 +19,4 @@ runs:
 
     - name: Run script
       shell: bash
-      run: python ${{ github.action_path }}/create-release-branches.py
+      run: python ${{ github.action_path }}/create_release_branches.py

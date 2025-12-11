@@ -104,12 +104,12 @@ def write_to_github_step_summary(text):
 
 
 def main():
-    release_number = os.environ["RELEASE_NUMBER"]
+    release_number = os.environ["RELEASE_NUMBER"].strip()
     token = get_github_token()
     headers = {
         "Authorization": f"Bearer {token}",
         "Accept": "application/vnd.github+json",
-        "X-GitHub-Api-Version": "2022-11-28"
+        "X-GitHub-Api-Version": "2022-11-28",
     }
 
     if not REPOSITORIES:
